@@ -6,6 +6,15 @@ var ment_settings = {
 	startWithSpace: true,
 	maxLen: maxnamelength,
 	callbacks: {
+		matcher: function(flag, subtext) {
+			var match, matched, regexp;
+			regexp = new XRegExp('(\\s+|^)' + flag + '(\\p{L}+)$', 'gi');
+			match = regexp.exec(subtext);
+			if (match) {
+				matched = match[2];
+			}
+			return matched;
+		},
 		remoteFilter: function(query, callback) {
 			if (query.length > 2) {
 				$.getJSON('xmlhttp.php?action=get_users', {query: query}, function(data) {

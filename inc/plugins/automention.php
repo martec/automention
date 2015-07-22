@@ -1,6 +1,6 @@
 <?php
 /**
- * Autocomplete Poll
+ * Automention
  * https://github.com/martec
  *
  * Copyright (C) 2015-2015, Martec
@@ -20,7 +20,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-define('AM_PLUGIN_VER', '1.0.0');
+define('AM_PLUGIN_VER', '1.2.0');
 
 function automention_info()
 {
@@ -53,15 +53,16 @@ function automention_deactivate()
 	find_replace_templatesets("footer", '#'.preg_quote('{$automention}').'#', '',0);
 }
 
-$plugins->add_hook('global_start', 'autcompletepoll');
+$plugins->add_hook('global_start', 'automention');
 
-function autcompletepoll() {
+function automention() {
 	global $automention, $mybb;
 
 	$plugin_local = array('calendar.php', 'editpost.php', 'modcp.php', 'newreply.php', 'newthread.php', 'showthread.php', 'private.php', 'usercp.php', 'warnings.php');
 	foreach ($plugin_local as &$local) {
 		if (THIS_SCRIPT == ''.$local.'') {
 			$automention = "<script type=\"text/javascript\">var maxnamelength = '".$mybb->settings['maxnamelength']."'</script>
+<script type=\"text/javascript\" src=\"".$mybb->asset_url."/jscripts/automention/xregexp-all-min.js?ver=".AM_PLUGIN_VER."\"></script>
 <link rel=\"stylesheet\" href=\"".$mybb->asset_url."/jscripts/automention/jquery.atwho.min.css?ver=".AM_PLUGIN_VER."\" type=\"text/css\" media=\"all\" />
 <script type=\"text/javascript\" src=\"".$mybb->asset_url."/jscripts/automention/jquery.caret.min.js?ver=".AM_PLUGIN_VER."\"></script>
 <script type=\"text/javascript\" src=\"".$mybb->asset_url."/jscripts/automention/jquery.atwho.min.js?ver=".AM_PLUGIN_VER."\"></script>
