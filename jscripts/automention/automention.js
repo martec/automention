@@ -8,7 +8,7 @@ var ment_settings = {
 	callbacks: {
 		matcher: function(flag, subtext) {
 			var match, matched, regexp;
-			regexp = new XRegExp('(\\s+|^)' + flag + '(\\p{L}+)$', 'gi');
+			regexp = new XRegExp('(\\s+|^)' + flag + '([\\p{L}|\\p{N}]+)$', 'gi');
 			match = regexp.exec(subtext);
 			if (match) {
 				matched = match[2];
@@ -19,7 +19,7 @@ var ment_settings = {
 			if (query.length > 2) {
 				$.getJSON('xmlhttp.php?action=get_users', {query: query}, function(data) {
 					callback(data);
-				});			
+				});
 			}
 			else {
 				callback([]);
