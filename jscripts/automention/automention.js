@@ -27,6 +27,10 @@ var ment_settings = {
 		}
 	}
 }
+function automentionck( local ) {
+	$(local).atwho('setIframe').atwho(ment_settings);
+	$(local).atwho(ment_settings);
+} 
 $(document).ready(function() {
 	if (typeof $.fn.sceditor !== 'undefined') {
 		if($('#message, #signature').sceditor("instance")) {
