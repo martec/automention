@@ -16,7 +16,7 @@ var ment_settings = {
 			return matched;
 		},
 		remoteFilter: function(query, callback) {
-			if (query.length > 2) {
+			if (query.length > 1) {
 				$.getJSON('xmlhttp.php?action=get_users', {query: query}, function(data) {
 					callback(data);
 				});
@@ -63,5 +63,9 @@ $(document).ready(function() {
 			qse_area = 'quickedit_'+pid;
 			$('#'+qse_area+'').atwho(ment_settings);
 		});
+	}
+	var shoutbox = '.panel > form > input[class="text"]';
+	if ($(shoutbox).length) {
+		$(shoutbox).atwho(ment_settings);
 	}
 });

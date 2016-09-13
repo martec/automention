@@ -20,7 +20,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-define('AM_PLUGIN_VER', '1.3.0');
+define('AM_PLUGIN_VER', '1.3.1');
 
 function automention_info()
 {
@@ -56,9 +56,13 @@ function automention_deactivate()
 $plugins->add_hook('global_start', 'automention');
 
 function automention() {
-	global $automention, $mybb;
+	global $automention, $mybb, $cache;
 
 	$plugin_local = array('calendar.php', 'editpost.php', 'modcp.php', 'newreply.php', 'newthread.php', 'showthread.php', 'private.php', 'usercp.php', 'warnings.php');
+	$plu_dv = $cache->read("plugins");
+	if ($plu_dv['active']['dvz_shoutbox']) {
+		$plugin_local[] = "index.php";
+	}
 	foreach ($plugin_local as &$local) {
 		if (THIS_SCRIPT == ''.$local.'') {
 			$automention = "<script type=\"text/javascript\">var maxnamelength = '".$mybb->settings['maxnamelength']."'</script>
