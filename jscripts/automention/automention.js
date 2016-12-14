@@ -1,7 +1,7 @@
 var ment_settings = {
 	at: "@",
 	searchKey: "text",
-	displayTpl: "<li>${text}</li>",
+	displayTpl: "<li><span class='am_avatar'><img src='${avatar}' class='am_avatar_img'></span>${text}</li>",
 	insertTpl: '${atwho-at}"${text}"',
 	startWithSpace: true,
 	maxLen: maxnamelength,
@@ -17,7 +17,7 @@ var ment_settings = {
 		},
 		remoteFilter: function(query, callback) {
 			if (query.length > 1) {
-				$.getJSON('xmlhttp.php?action=get_users', {query: query}, function(data) {
+				$.getJSON('xmlhttp.php?action=get_users_plus', {query: query}, function(data) {
 					callback(data);
 				});
 			}
