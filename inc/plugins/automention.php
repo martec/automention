@@ -20,7 +20,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-define('AM_PLUGIN_VER', '1.3.3');
+define('AM_PLUGIN_VER', '1.3.4');
 
 function automention_info()
 {
