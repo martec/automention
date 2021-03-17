@@ -20,7 +20,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-define('AM_PLUGIN_VER', '1.3.5');
+define('AM_PLUGIN_VER', '1.3.5.2');
 
 function automention_info()
 {
@@ -118,12 +118,12 @@ function am_get_users() {
 			"limit" => $limit
 		);
 
-		$query = $db->simple_select("users", "uid, username, avatar", "username LIKE '".$db->escape_string_like($mybb->input['query'])."%'", $query_options);
+		$query = $db->simple_select("users", "uid, username, avatar", "username LIKE '%".$db->escape_string_like($mybb->input['query'])."%'", $query_options);
 		if($limit == 1)
 		{
 			$user = $db->fetch_array($query);
 			if(!$user['avatar']) {$user['avatar'] = defaultavatar();};
-			$data = array('id' => $user['username'], 'text' => $user['username'], 'avatar' => $user['avatar']);
+			$data = array('id' => $user['username'], 'text' => $user['username'], 'avatar' => $user['avatar'], 'uid' => $user['uid']);
 		}
 		else
 		{
@@ -131,7 +131,7 @@ function am_get_users() {
 			while($user = $db->fetch_array($query))
 			{
 				if(!$user['avatar']) {$user['avatar'] = defaultavatar();};
-				$data[] = array('id' => $user['username'], 'text' => $user['username'], 'avatar' => $user['avatar']);
+				$data[] = array('id' => $user['username'], 'text' => $user['username'], 'avatar' => $user['avatar'], 'uid' => $user['uid']);
 			}
 		}
 
