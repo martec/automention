@@ -8,8 +8,7 @@ var ment_settings = {
 	callbacks: {
 		matcher: function(flag, subtext) {
 			var match, matched, regexp;
-			if (subtext == '@') return '';
-			regexp = new XRegExp('(\\s+|^)' + flag + '([\\p{L}|\\s.~\+\-\|\\p{N}]+)$', 'gi');
+			regexp = new XRegExp('(\\s+|^)' + flag + '([\\p{L}|\\s.~\+\-\|\\p{N}]+|)$', 'gi');
 			match = regexp.exec(subtext);
 			if (match) {
 				matched = match[2];
