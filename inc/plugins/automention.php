@@ -68,6 +68,10 @@ function automention() {
 			$automention = "<script type=\"text/javascript\">var maxnamelength = '".$mybb->settings['maxnamelength']."'</script>
 <script type=\"text/javascript\" src=\"".$mybb->asset_url."/jscripts/automention/xregexp-all-min.js?ver=".AM_PLUGIN_VER."\"></script>
 <link rel=\"stylesheet\" href=\"".$mybb->asset_url."/jscripts/automention/jquery.atwho.min.css?ver=".AM_PLUGIN_VER."\" type=\"text/css\" media=\"all\" />
+<script type=\"text/javascript\">
+var automention_css_file = '{$mybb->asset_url}/jscripts/automention/jquery.atwho.min.css?ver=".AM_PLUGIN_VER."';
+var tid = ".$mybb->get_input('tid', MyBB::INPUT_INT).";
+</script>
 <script type=\"text/javascript\" src=\"".$mybb->asset_url."/jscripts/automention/jquery.caret.min.js?ver=".AM_PLUGIN_VER."\"></script>
 <script type=\"text/javascript\" src=\"".$mybb->asset_url."/jscripts/automention/jquery.atwho.min.js?ver=".AM_PLUGIN_VER."\"></script>
 <script type=\"text/javascript\" src=\"".$mybb->asset_url."/jscripts/automention/automention.js?ver=".AM_PLUGIN_VER."\"></script>";
@@ -96,10 +100,10 @@ function am_get_users() {
 	{
 		$mybb->input['query'] = ltrim($mybb->get_input('query'));
 		// If the string is less than 2 characters, quit.
-		if(my_strlen($mybb->input['query']) < 2)
-		{
-			exit;
-		}
+// 		if(my_strlen($mybb->input['query']) < 2)
+// 		{
+// 			exit;
+// 		}
 		if($mybb->get_input('getone', MyBB::INPUT_INT) == 1)
 		{
 			$limit = 1;
@@ -110,15 +114,22 @@ function am_get_users() {
 		}
 		// Send our headers.
 		header("Content-type: application/json; charset={$charset}");
-		// Query for any matching users.
-		$query_options = array(
-			"order_by" => "username",
-			"order_dir" => "asc",
-			"limit_start" => 0,
-			"limit" => $limit
-		);
 
-		$query = $db->simple_select("users", "uid, username, avatar", "username LIKE '%".$db->escape_string_like($mybb->input['query'])."%'", $query_options);
+		// Query for any matching users.
+
+		$tid = $mybb->get_input('tid', MyBB::INPUT_INT);
+		if ($tid) {
+			$query = $db->query("SELECT DISTINCT u.uid, u.username, u.avatar FROM ".TABLE_PREFIX."users u INNER JOIN ".TABLE_PREFIX."posts p ON p.uid = u.uid INNER JOIN ".TABLE_PREFIX."threads t ON p.tid = t.tid WHERE t.tid = {$tid} ORDER BY username ASC LIMIT 0, {$limit}");
+		} else {
+			$query_options = array(
+				"order_by" => "username",
+				"order_dir" => "asc",
+				"limit_start" => 0,
+				"limit" => $limit
+			);
+
+			$query = $db->simple_select("users", "uid, username, avatar", "username LIKE '%".$db->escape_string_like($mybb->input['query'])."%'", $query_options);
+		}
 		if($limit == 1)
 		{
 			$user = $db->fetch_array($query);
