@@ -1,8 +1,8 @@
 var ment_settings = {
 	at: "@",
 	searchKey: "text",
-	displayTpl: "<li><span class='am_avatar'><img src='${avatar}' class='am_avatar_img'></span>${text}</li>",
-	insertTpl: '${atwho-at}"${text}"',
+	displayTpl: "<li><span class='am_avatar'><img src='${avatar}' onError='this.onerror=null;this.src=imagepath + \"/default_avatar.png\"';' class='am_avatar_img'></span>${text}</li>",
+	insertTpl: '${atwho-at}"${text}"#${uid}',
 	startWithSpace: true,
 	maxLen: maxnamelength,
 	callbacks: {
@@ -30,7 +30,7 @@ var ment_settings = {
 function automentionck( local ) {
 	$(local).atwho('setIframe').atwho(ment_settings);
 	$(local).atwho(ment_settings);
-} 
+}
 $(document).ready(function() {
 	if (typeof $.fn.sceditor !== 'undefined') {
 		if($('#message, #signature').sceditor("instance")) {

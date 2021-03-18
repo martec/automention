@@ -3,7 +3,7 @@
  * Automention
  * https://github.com/martec
  *
- * Copyright (C) 2015-2016, Martec
+ * Copyright (C) 2015-2021, Martec
  *
  * Autocomplete Poll is licensed under the GPL Version 3, 29 June 2007 license:
  *	http://www.gnu.org/copyleft/gpl.html
@@ -20,7 +20,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-define('AM_PLUGIN_VER', '1.3.5');
+define('AM_PLUGIN_VER', '1.3.6');
 
 function automention_info()
 {
@@ -91,7 +91,7 @@ function defaultavatar() {
 $plugins->add_hook('xmlhttp', 'am_get_users');
 function am_get_users() {
 	global $mybb, $db;
-	
+
 	if($mybb->input['action'] == "get_users_plus")
 	{
 		$mybb->input['query'] = ltrim($mybb->get_input('query'));
@@ -123,7 +123,7 @@ function am_get_users() {
 		{
 			$user = $db->fetch_array($query);
 			if(!$user['avatar']) {$user['avatar'] = defaultavatar();};
-			$data = array('id' => $user['username'], 'text' => $user['username'], 'avatar' => $user['avatar']);
+			$data = array('id' => $user['username'], 'text' => $user['username'], 'avatar' => $user['avatar'], 'uid' => $user['uid']);
 		}
 		else
 		{
@@ -131,7 +131,7 @@ function am_get_users() {
 			while($user = $db->fetch_array($query))
 			{
 				if(!$user['avatar']) {$user['avatar'] = defaultavatar();};
-				$data[] = array('id' => $user['username'], 'text' => $user['username'], 'avatar' => $user['avatar']);
+				$data[] = array('id' => $user['username'], 'text' => $user['username'], 'avatar' => $user['avatar'], 'uid' => $user['uid']);
 			}
 		}
 
