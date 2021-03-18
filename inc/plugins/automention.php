@@ -118,7 +118,7 @@ function am_get_users() {
 			"limit" => $limit
 		);
 
-		$query = $db->simple_select("users", "uid, username, avatar", "username LIKE '".$db->escape_string_like($mybb->input['query'])."%'", $query_options);
+		$query = $db->simple_select("users", "uid, username, avatar", "username LIKE '%".$db->escape_string_like($mybb->input['query'])."%'", $query_options);
 		if($limit == 1)
 		{
 			$user = $db->fetch_array($query);
