@@ -3,9 +3,9 @@
  * Automention
  * https://github.com/martec
  *
- * Copyright (C) 2015-2016, Martec
+ * Copyright (C) 2015-2021, Martec
  *
- * Autocomplete Poll is licensed under the GPL Version 3, 29 June 2007 license:
+ * Autocomplete is licensed under the GPL Version 3, 29 June 2007 license:
  *	http://www.gnu.org/copyleft/gpl.html
  *
  * @fileoverview Automention - Autocomplete Mention
@@ -99,7 +99,7 @@ function am_get_users() {
 	if($mybb->input['action'] == "get_users_plus")
 	{
 		$mybb->input['query'] = ltrim($mybb->get_input('query'));
-		// If the string is less than 2 characters, quit.
+		// If the string is less than 2 characters, quit (commented out because of Thread participants feature)
 // 		if(my_strlen($mybb->input['query']) < 2)
 // 		{
 // 			exit;
