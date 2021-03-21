@@ -5,7 +5,7 @@
  *
  * Copyright (C) 2015-2021, Martec
  *
- * Autocomplete Poll is licensed under the GPL Version 3, 29 June 2007 license:
+ * Automention is licensed under the GPL Version 3, 29 June 2007 license:
  *	http://www.gnu.org/copyleft/gpl.html
  *
  * @fileoverview Automention - Autocomplete Mention
@@ -20,7 +20,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-define('AM_PLUGIN_VER', '1.3.6');
+define('AM_PLUGIN_VER', '1.3.8');
 
 function automention_info()
 {
@@ -36,43 +36,157 @@ function automention_info()
 
 }
 
-function automention_activate()
+function automention_install()
+{
+	global $db, $lang, $mybb;
+
+	$lang->load('config_automention');
+
+	$query	= $db->simple_select("settinggroups", "COUNT(*) as counts");
+	$dorder = $db->fetch_field($query, 'counts') + 1;
+
+	$groupid = $db->insert_query('settinggroups', array(
+		'name'		=> 'automention',
+		'title'		=> 'Autocomplete Mention',
+		'description'	=> $lang->automention_sett_desc,
+		'disporder'	=> $dorder,
+		'isdefault'	=> '0'
+	));
+
+	$dorder_set = 0;
+	$new_setting[] = array(
+		'name'		=> 'automention_on_off',
+		'title'		=> $lang->automention_onoff_title,
+		'description'	=> $lang->automention_enb_desc,
+		'optionscode'	=> 'yesno',
+		'value'		=> '0',
+		'disporder'	=> ++$dorder_set,
+		'gid'		=> $groupid
+	);
+
+	$new_setting[] = array(
+		'name'		=> 'automention_limit_items',
+		'title'		=> $lang->automention_limitems_title,
+		'description'	=> $lang->automention_limitems_desc,
+		'optionscode'	=> 'numeric',
+		'value'		=> '10',
+		'disporder'	=> ++$dorder_set,
+		'gid'		=> $groupid
+	);
+
+	$new_setting[] = array(
+		'name'		=> 'automention_max_length',
+		'title'		=> $lang->automention_maxlenght_title,
+		'description'	=> $lang->automention_maxlenght_desc,
+		'optionscode'	=> 'numeric',
+		'value'		=> '15',
+		'disporder'	=> ++$dorder_set,
+		'gid'		=> $groupid
+	);
+
+	$new_setting[] = array(
+		'name'		=> 'automention_avatar_support',
+		'title'		=> $lang->automention_avatar_title,
+		'description'	=> $lang->automention_avatar_desc,
+		'optionscode'	=> 'yesno',
+		'value'		=> '0',
+		'disporder'	=> ++$dorder_set,
+		'gid'		=> $groupid
+	);
+
+	$new_setting[] = array(
+		'name'		=> 'automention_space_support',
+		'title'		=> $lang->automention_space_title,
+		'description'	=> $lang->automention_space_desc,
+		'optionscode'	=> 'yesno',
+		'value'		=> '0',
+		'disporder'	=> ++$dorder_set,
+		'gid'		=> $groupid
+	);
+
+	$new_setting[] = array(
+		'name'		=> 'automention_fulltext_support',
+		'title'		=> $lang->automention_fulltext_title,
+		'description'	=> $lang->automention_fulltext_desc,
+		'optionscode'	=> 'yesno',
+		'value'		=> '0',
+		'disporder'	=> ++$dorder_set,
+		'gid'		=> $groupid
+	);
+
+	$new_setting[] = array(
+		'name'		=> 'automention_thread_participants',
+		'title'		=> $lang->automention_threadpart_title,
+		'description'	=> $lang->automention_threadpart_desc,
+		'optionscode'	=> 'yesno',
+		'value'		=> '0',
+		'disporder'	=> ++$dorder_set,
+		'gid'		=> $groupid
+	);
+
+	$db->insert_query_multiple("settings", $new_setting);
+	rebuild_settings();
+}
+
+function automention_is_installed()
 {
 	global $db;
 
-	require_once MYBB_ROOT."inc/adminfunctions_templates.php";
+	$query = $db->simple_select("settinggroups", "COUNT(*) as counts", "name = 'automention'");
+	$rows  = $db->fetch_field($query, 'counts');
 
-	find_replace_templatesets("footer", '/$/', "{\$automention}");
+	return ($rows > 0);
 }
 
-function automention_deactivate()
+function automention_uninstall()
 {
 	global $db;
-	include_once MYBB_ROOT."inc/adminfunctions_templates.php";
 
-	find_replace_templatesets("footer", '#'.preg_quote('{$automention}').'#', '',0);
+	$groupid = $db->fetch_field(
+		$db->simple_select('settinggroups', 'gid', "name='automention'"),
+		'gid'
+	);
+
+	$db->delete_query('settings', 'gid=' . $groupid);
+	$db->delete_query("settinggroups", "name = 'automention'");
+	rebuild_settings();
 }
 
-$plugins->add_hook('global_start', 'automention');
+global $settings;
 
-function automention() {
-	global $automention, $mybb, $cache;
+if($settings['automention_on_off']) {
+	$plugins->add_hook('pre_output_page', 'automention');
+}
+
+function automention(&$aut_content) {
+	global $mybb, $cache;
 
 	$plugin_local = array('calendar.php', 'editpost.php', 'modcp.php', 'newreply.php', 'newthread.php', 'showthread.php', 'private.php', 'usercp.php', 'warnings.php');
 	$plu_dv = $cache->read("plugins");
 	if ($plu_dv['active']['dvz_shoutbox']) {
 		$plugin_local[] = "index.php";
 	}
-	foreach ($plugin_local as &$local) {
-		if (THIS_SCRIPT == ''.$local.'') {
-			$automention = "<script type=\"text/javascript\">var maxnamelength = '".$mybb->settings['maxnamelength']."'</script>
+
+	$automention = "<script type=\"text/javascript\">var aut_maxnamelength = '".$mybb->settings['maxnamelength']."',
+	aut_maxnumberitems = '".$mybb->settings['automention_limit_items']."',
+	aut_spacesupp = '".$mybb->settings['automention_space_support']."',
+	aut_avatar_set = '".$mybb->settings['automention_avatar_support']."',
+	aut_css_file = '{$mybb->asset_url}/jscripts/automention/jquery.atwho.min.css?ver=".AM_PLUGIN_VER."',
+	aut_tid = ".$mybb->get_input('tid', MyBB::INPUT_INT).";
+</script>
 <script type=\"text/javascript\" src=\"".$mybb->asset_url."/jscripts/automention/xregexp-all-min.js?ver=".AM_PLUGIN_VER."\"></script>
 <link rel=\"stylesheet\" href=\"".$mybb->asset_url."/jscripts/automention/jquery.atwho.min.css?ver=".AM_PLUGIN_VER."\" type=\"text/css\" media=\"all\" />
 <script type=\"text/javascript\" src=\"".$mybb->asset_url."/jscripts/automention/jquery.caret.min.js?ver=".AM_PLUGIN_VER."\"></script>
 <script type=\"text/javascript\" src=\"".$mybb->asset_url."/jscripts/automention/jquery.atwho.min.js?ver=".AM_PLUGIN_VER."\"></script>
 <script type=\"text/javascript\" src=\"".$mybb->asset_url."/jscripts/automention/automention.js?ver=".AM_PLUGIN_VER."\"></script>";
+
+	foreach ($plugin_local as &$local) {
+		if (THIS_SCRIPT == ''.$local.'') {
+			$aut_content = str_replace('</body>', $automention . '</body>', $aut_content);
 		}
 	}
+
+	return $aut_content;
 }
 
 function defaultavatar() {
@@ -96,7 +210,7 @@ function am_get_users() {
 	{
 		$mybb->input['query'] = ltrim($mybb->get_input('query'));
 		// If the string is less than 2 characters, quit.
-		if(my_strlen($mybb->input['query']) < 2)
+		if(my_strlen($mybb->input['query']) < 2 && !$mybb->settings['automention_thread_participants'])
 		{
 			exit;
 		}
@@ -111,14 +225,27 @@ function am_get_users() {
 		// Send our headers.
 		header("Content-type: application/json; charset={$charset}");
 		// Query for any matching users.
-		$query_options = array(
-			"order_by" => "username",
-			"order_dir" => "asc",
-			"limit_start" => 0,
-			"limit" => $limit
-		);
 
-		$query = $db->simple_select("users", "uid, username, avatar", "username LIKE '".$db->escape_string_like($mybb->input['query'])."%'", $query_options);
+		$tid = $mybb->get_input('tid', MyBB::INPUT_INT);
+		if ($tid && $mybb->settings['automention_thread_participants']) {
+			$query = $db->query("SELECT DISTINCT u.uid, u.username, u.avatar FROM ".TABLE_PREFIX."users u INNER JOIN ".TABLE_PREFIX."posts p ON p.uid = u.uid INNER JOIN ".TABLE_PREFIX."threads t ON p.tid = t.tid WHERE t.tid = {$tid} ORDER BY username ASC LIMIT 0, {$limit}");
+		} else {
+			$query_options = array(
+				"order_by" => "username",
+				"order_dir" => "asc",
+				"limit_start" => 0,
+				"limit" => $limit
+			);
+
+			if($mybb->settings['automention_fulltext_support'])
+			{
+				$query = $db->simple_select("users", "uid, username, avatar", "username LIKE '%".$db->escape_string_like($mybb->input['query'])."%'", $query_options);
+			}
+			else {
+				$query = $db->simple_select("users", "uid, username, avatar", "username LIKE '".$db->escape_string_like($mybb->input['query'])."%'", $query_options);
+			}
+		}
+
 		if($limit == 1)
 		{
 			$user = $db->fetch_array($query);
