@@ -57,7 +57,7 @@ function automention_install()
 	$new_setting[] = array(
 		'name'		=> 'automention_on_off',
 		'title'		=> $lang->automention_onoff_title,
-		'description'	=> $lang->automention_enb_desc,
+		'description'	=> $lang->automention_onoff_desc,
 		'optionscode'	=> 'yesno',
 		'value'		=> '0',
 		'disporder'	=> ++$dorder_set,

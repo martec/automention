@@ -1,7 +1,7 @@
 <?php
 $l['automention_sett_desc'] = 'Settings related to the Automention.';
-$l['automention_onoff_title'] = 'Enable or Disable the Automation';
-$l['automention_onoff_desc'] = 'Set to yes if you want to enable the Automation.';
+$l['automention_onoff_title'] = 'Enable or Disable the Automention';
+$l['automention_onoff_desc'] = 'Set to yes if you want to enable the Automention.';
 $l['automention_limitems_title'] = 'Limit number of items to show in popup list';
 $l['automention_limitems_desc'] = 'Set to here limit number of items to show in popup list.';
 $l['automention_maxlenght_title'] = 'Max length of the string';
