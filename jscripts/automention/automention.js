@@ -55,6 +55,11 @@ ment_settings = {
 					return '> ' + $1 + '<strong>' + $2 + '</strong>' + $3 + ' <';
 				});
 			}
+		},
+		beforeReposition: function(offset) {
+			if ($iframe) {
+				offset.top -= $iframe.contents().find('html').scrollTop();
+			}
 		}
 	}
 }
@@ -65,16 +70,9 @@ function automentionck( local ) {
 $(document).ready(function() {
 	if (typeof $.fn.sceditor !== 'undefined') {
 		if($('#message, #signature').sceditor("instance")) {
-			var $iframe = $('.sceditor-container iframe');
-			$($('#message, #signature').sceditor("instance").getBody()).atwho('setIframe', $iframe[0], true).atwho(ment_settings);
-			var cssLink = $('<link/>',{
-				href: aut_css_file,
-				rel: 'stylesheet',
-				type: 'text/css'
-			});
-			var $iframeBody = $iframe.contents().find("body");
-			$iframeBody.prepend(cssLink);
-			$($('#message ~ div.sceditor-container textarea, #signature ~ div.sceditor-container textarea')[0]).atwho(ment_settings);
+			$iframe = $('.sceditor-container iframe');
+			$($('#message, #signature').sceditor("instance").getBody()).atwho('setIframe', $iframe[0], false).atwho(ment_settings);
+			$($('.sceditor-container textarea')[0]).atwho(ment_settings);
 		}
 		else {
 			$('#message, #signature').atwho(ment_settings);
@@ -84,9 +82,10 @@ $(document).ready(function() {
 			var pid = ed_id.replace( /[^0-9]/g, '');
 			qse_area = 'quickedit_'+pid;
 			setTimeout(function() {
+				$iframe = $('.sceditor-container iframe');
 				if ($('#'+qse_area+'').sceditor("instance")) {
-					$($('#'+qse_area+'').sceditor("instance").getBody()).atwho('setIframe').atwho(ment_settings);
-					$($('#'+qse_area+' ~ div.sceditor-container textarea')[0]).atwho(ment_settings);
+					$($('#'+qse_area).sceditor("instance").getBody()).atwho('setIframe', $iframe[0], false).atwho(ment_settings);
+					$('#pid_'+pid+' .sceditor-container textarea').atwho(ment_settings);
 				}
 				else {
 					$('#'+qse_area+'').atwho(ment_settings);
