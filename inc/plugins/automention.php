@@ -169,6 +169,7 @@ function automention(&$aut_content) {
 
 	$automention = "<script type=\"text/javascript\">var aut_maxnamelength = '".$mybb->settings['maxnamelength']."',
 	aut_maxnumberitems = '".$mybb->settings['automention_limit_items']."',
+	aut_max_length = ".(int)$mybb->settings['automention_max_length'].",
 	aut_spacesupp = '".$mybb->settings['automention_space_support']."',
 	aut_avatar_set = '".$mybb->settings['automention_avatar_support']."',
 	aut_css_file = '{$mybb->asset_url}/jscripts/automention/jquery.atwho.min.css?ver=".AM_PLUGIN_VER."',
@@ -220,7 +221,7 @@ function am_get_users() {
 		}
 		else
 		{
-			$limit = 15;
+			$limit = (int)$mybb->settings['automention_limit_items'];
 		}
 		// Send our headers.
 		header("Content-type: application/json; charset={$charset}");
