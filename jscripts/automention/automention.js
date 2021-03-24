@@ -60,7 +60,7 @@ ment_settings = {
 			}
 		},
 		beforeReposition: function(offset) {
-			if ($iframe) {
+			if (typeof $iframe !== 'undefined') {
 				offset.top -= $iframe.contents().find('html').scrollTop();
 			}
 		}
