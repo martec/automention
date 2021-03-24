@@ -76,8 +76,8 @@ function automention_install()
 
 	$new_setting[] = array(
 		'name'		=> 'automention_max_length',
-		'title'		=> $lang->automention_maxlenght_title,
-		'description'	=> $lang->automention_maxlenght_desc,
+		'title'		=> $lang->automention_maxlength_title,
+		'description'	=> $lang->automention_maxlength_desc,
 		'optionscode'	=> 'numeric',
 		'value'		=> '15',
 		'disporder'	=> ++$dorder_set,
