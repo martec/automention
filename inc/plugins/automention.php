@@ -172,7 +172,6 @@ function automention(&$aut_content) {
 	aut_max_length = ".(int)$mybb->settings['automention_max_length'].",
 	aut_spacesupp = '".$mybb->settings['automention_space_support']."',
 	aut_avatar_set = '".$mybb->settings['automention_avatar_support']."',
-	aut_css_file = '{$mybb->asset_url}/jscripts/automention/jquery.atwho.min.css?ver=".AM_PLUGIN_VER."',
 	aut_tid = ".$mybb->get_input('tid', MyBB::INPUT_INT).";
 </script>
 <script type=\"text/javascript\" src=\"".$mybb->asset_url."/jscripts/automention/xregexp-all-min.js?ver=".AM_PLUGIN_VER."\"></script>
