@@ -14,7 +14,7 @@ ment_settings = {
 	displayTpl: aut_avatar,
 	insertTpl: '${atwho-at}"${text}"#${uid}',
 	startWithSpace: true,
-	lim: aut_maxnumberitems,
+	limit: aut_maxnumberitems,
 	maxLen: aut_maxnamelength,
 	callbacks: {
 		matcher: function(flag, subtext) {
