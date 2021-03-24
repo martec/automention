@@ -32,6 +32,9 @@ ment_settings = {
 			}
 			return matched;
 		},
+		afterMatchFailed: function(at, el) {
+			return false;
+		},
 		remoteFilter: function(query, callback) {
 			var params = {query: query};
 			if (query || aut_tid) {
