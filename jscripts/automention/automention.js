@@ -25,9 +25,9 @@ ment_settings = {
 			else {
 				regexp = new XRegExp('(\\s+|^)' + flag + '([\\p{L}|.~\+\-\|\\p{N}]+|)$', 'gi');
 			}
-			
+
 			match = regexp.exec(subtext);
-			if (match) {
+			if (match && match[2].length <= aut_max_length) {
 				matched = match[2];
 			}
 			return matched;
