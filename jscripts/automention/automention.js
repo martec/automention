@@ -42,12 +42,12 @@ ment_settings = {
 		remoteFilter: function(query, callback) {
 			var params = {query: query},
 			similar_query = query.trim().includes(old_query.trim(), 0);
-			if ((query && first_try) || (query && !similar_query) || (query && similar_query && old_data.length > 0) || (aut_tid && parseInt(aut_thread_part))) {
-				old_query = query;
+			if ((query.length > 1 && first_try) || (query.length > 1 && !similar_query) || (query.length > 1 && similar_query && old_data.length > 0) || (aut_tid && query == '' && parseInt(aut_thread_part))) {
 				if (query == '' && aut_tid) {
 					params.tid = aut_tid;
 				}
 				$.getJSON('xmlhttp.php?action=get_users_plus', params, function(data) {
+					old_query = query;
 					old_data = data;
 					first_try = false;
 					callback(data);
