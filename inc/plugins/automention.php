@@ -20,7 +20,7 @@ if(!defined("IN_MYBB"))
 	die("Direct initialization of this file is not allowed.<br /><br />Please make sure IN_MYBB is defined.");
 }
 
-define('AM_PLUGIN_VER', '1.3.9');
+define('AM_PLUGIN_VER', '1.3.10');
 
 function automention_info()
 {
@@ -172,6 +172,7 @@ function automention(&$aut_content) {
 	aut_max_length = ".(int)$mybb->settings['automention_max_length'].",
 	aut_spacesupp = '".$mybb->settings['automention_space_support']."',
 	aut_avatar_set = '".$mybb->settings['automention_avatar_support']."',
+	aut_thread_part = '".$mybb->settings['automention_thread_participants']."',
 	aut_tid = ".$mybb->get_input('tid', MyBB::INPUT_INT).";
 </script>
 <script type=\"text/javascript\" src=\"".$mybb->asset_url."/jscripts/automention/xregexp-all-min.js?ver=".AM_PLUGIN_VER."\"></script>

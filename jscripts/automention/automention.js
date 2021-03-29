@@ -1,5 +1,9 @@
 var aut_avatar,
-ment_settings;
+ment_settings,
+old_data = [],
+old_query = '',
+similar_query,
+first_try = true;
 
 if (parseInt(aut_avatar_set)) {
 	aut_avatar = "<li><span class='am_avatar'><img src='${avatar}' onError='this.onerror=null;this.src=imagepath + \"/default_avatar.png\"';' class='am_avatar_img'></span>${text}</li>";
@@ -36,12 +40,16 @@ ment_settings = {
 			return false;
 		},
 		remoteFilter: function(query, callback) {
-			var params = {query: query};
-			if (query || aut_tid) {
+			var params = {query: query},
+			similar_query = query.trim().includes(old_query.trim(), 0);
+			if ((query && first_try) || (query && !similar_query) || (query && similar_query && old_data.length > 0) || (aut_tid && parseInt(aut_thread_part))) {
+				old_query = query;
 				if (query == '' && aut_tid) {
 					params.tid = aut_tid;
 				}
 				$.getJSON('xmlhttp.php?action=get_users_plus', params, function(data) {
+					old_data = data;
+					first_try = false;
 					callback(data);
 				});
 			} else	callback([]);
