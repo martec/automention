@@ -80,7 +80,7 @@ function automentionck( local ) {
 }
 $(document).ready(function() {
 	if (typeof $.fn.sceditor !== 'undefined') {
-		if($('#message, #signature').sceditor("instance")) {
+		if (typeof $('#message, #signature').sceditor("instance").getBody === 'function') {
 			$iframe = $('.sceditor-container iframe');
 			$($('#message, #signature').sceditor("instance").getBody()).atwho('setIframe', $iframe[0], false).atwho(ment_settings);
 			$($('.sceditor-container textarea')[0]).atwho(ment_settings);
