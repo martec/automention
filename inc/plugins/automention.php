@@ -227,10 +227,19 @@ function am_get_users() {
 		header("Content-type: application/json; charset={$charset}");
 		// Query for any matching users.
 
+		$users = $usernames = array();
+
 		$tid = $mybb->get_input('tid', MyBB::INPUT_INT);
-		if ($tid && $mybb->settings['automention_thread_participants']) {
+		if($tid && $mybb->settings['automention_thread_participants'])
+		{
 			$query = $db->query("SELECT DISTINCT u.uid, u.username, u.avatar FROM ".TABLE_PREFIX."users u INNER JOIN ".TABLE_PREFIX."posts p ON p.uid = u.uid INNER JOIN ".TABLE_PREFIX."threads t ON p.tid = t.tid WHERE t.tid = {$tid} ORDER BY username ASC LIMIT 0, {$limit}");
-		} else {
+			while($user = $db->fetch_array($query))
+			{
+				$users[] = $user;
+			}
+		}
+		else
+		{
 			$query_options = array(
 				"order_by" => "username",
 				"order_dir" => "asc",
@@ -238,25 +247,46 @@ function am_get_users() {
 				"limit" => $limit
 			);
 
-			if($mybb->settings['automention_fulltext_support'])
+			$conds = '';
+			$query = $db->simple_select("users", "uid, username, avatar", "username LIKE '".$db->escape_string_like($mybb->input['query'])."%'", $query_options);
+			while($user = $db->fetch_array($query))
 			{
-				$query = $db->simple_select("users", "uid, username, avatar", "username LIKE '%".$db->escape_string_like($mybb->input['query'])."%'", $query_options);
+				$users[] = $user;
+				$usernames[] = $user['username'];
 			}
-			else {
-				$query = $db->simple_select("users", "uid, username, avatar", "username LIKE '".$db->escape_string_like($mybb->input['query'])."%'", $query_options);
+			$limit = $limit - count($users);
+			if($limit > 0 && $mybb->settings['automention_fulltext_support'])
+			{
+				if(count($users) > 0)
+				{
+					$conds = ' AND username NOT IN (\''.implode("', '", array_map(array($db, 'escape_string'), $usernames)).'\')';
+				}
+				$query_options['limit'] = $limit;
+				$query = $db->simple_select("users", "uid, username, avatar", "username LIKE '%".$db->escape_string_like($mybb->input['query'])."%'".$conds, $query_options);
+				while($user = $db->fetch_array($query))
+				{
+					$users[] = $user;
+				}
 			}
 		}
 
 		if($limit == 1)
 		{
-			$user = $db->fetch_array($query);
-			if(!$user['avatar']) {$user['avatar'] = defaultavatar();};
-			$data = array('id' => $user['username'], 'text' => $user['username'], 'avatar' => $user['avatar'], 'uid' => $user['uid']);
+			if($users)
+			{
+				$user = $users[0];
+				if(!$user['avatar']) {$user['avatar'] = defaultavatar();};
+				$data = array('id' => $user['username'], 'text' => $user['username'], 'avatar' => $user['avatar'], 'uid' => $user['uid']);
+			}
+			else
+			{
+				$data = array();
+			}
 		}
 		else
 		{
 			$data = array();
-			while($user = $db->fetch_array($query))
+			foreach($users as $user)
 			{
 				if(!$user['avatar']) {$user['avatar'] = defaultavatar();};
 				$data[] = array('id' => $user['username'], 'text' => $user['username'], 'avatar' => $user['avatar'], 'uid' => $user['uid']);
