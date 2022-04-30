@@ -11,6 +11,6 @@ $l['automention_avatar_desc'] = 'Set to "Yes" if you want to enable avatar suppo
 $l['automention_space_title'] = 'Support spaces?';
 $l['automention_space_desc'] = 'Set to "Yes" if you want to enable support for spaces in usernames to be auto-completed.<br />N.B. This feature can degrade fluidity in typing.';
 $l['automention_fulltext_title'] = 'Support full-text search?';
-$l['automention_fulltext_desc'] = 'Set to "Yes" if you want to match anywhere inside usernames, rather than from only the beginning of usernames.';
+$l['automention_fulltext_desc'] = 'Set to "Yes" if you want to match anywhere inside usernames, rather than from only the beginning of usernames (beginning matches will be prioritised).';
 $l['automention_threadpart_title'] = 'Support thread participant listings?';
 $l['automention_threadpart_desc'] = 'Set to "Yes" if you want the automention pop-up for an empty match (an @ character alone) to list thread participants.';
