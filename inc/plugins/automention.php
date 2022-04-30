@@ -270,31 +270,14 @@ function am_get_users() {
 			}
 		}
 
-		if($limit == 1)
+		$data = array();
+		foreach($users as $user)
 		{
-			if($users)
-			{
-				$user = $users[0];
-				if(!$user['avatar']) {$user['avatar'] = defaultavatar();};
-				$data = array('id' => $user['username'], 'text' => $user['username'], 'avatar' => $user['avatar'], 'uid' => $user['uid']);
-			}
-			else
-			{
-				$data = array();
-			}
-		}
-		else
-		{
-			$data = array();
-			foreach($users as $user)
-			{
-				if(!$user['avatar']) {$user['avatar'] = defaultavatar();};
-				$data[] = array('id' => $user['username'], 'text' => $user['username'], 'avatar' => $user['avatar'], 'uid' => $user['uid']);
-			}
+			if(!$user['avatar']) {$user['avatar'] = defaultavatar();};
+			$data[] = array('id' => $user['username'], 'text' => $user['username'], 'avatar' => $user['avatar'], 'uid' => $user['uid']);
 		}
 
 		echo json_encode($data);
 		exit;
 	}
 }
-?>
